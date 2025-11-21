@@ -7,6 +7,6 @@ export class BookmarkApiService {
   constructor(private http: HttpClient) {}
 
   loadBookmarks() {
-    return this.http.get<Bookmark[]>('/assets/bookmarks.json');
+    return this.http.get<Bookmark[]>('bookmarks.json');
   }
 }

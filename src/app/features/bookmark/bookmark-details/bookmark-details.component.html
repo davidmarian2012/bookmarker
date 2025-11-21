@@ -1,4 +1,9 @@
 <div class="container">
-  <h2>Facebook.com</h2>
-  <p>Login now</p>
+  <h2>
+    {{ bookmark?.name }}
+    <button mat-icon-button color="primary" (click)="openEditDialog()">
+      <mat-icon>edit</mat-icon>
+    </button>
+  </h2>
+  <p>{{ bookmark?.url }}</p>
 </div>
