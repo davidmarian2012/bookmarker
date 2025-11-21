@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "name": "Angular",
+    "url": "https://angular.io",
+    "createdAt": 1690000000000
+  },
+  {
+    "id": 2,
+    "name": "RxJS",
+    "url": "https://rxjs.dev",
+    "createdAt": 1690500000000
+  }
+]
