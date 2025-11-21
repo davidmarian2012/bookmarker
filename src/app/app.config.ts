@@ -3,7 +3,21 @@ import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
+import { provideStore } from '@ngrx/store';
+import { provideEffects } from '@ngrx/effects';
+import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { provideRouterStore } from '@ngrx/router-store';
+import { bookmarksReducer } from './state/bookmarks/bookmarks.reducer';
+import { BookmarksEffects } from './state/bookmarks/bookmarks.effects';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideHttpClient()],
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
+    provideHttpClient(),
+    provideStore({ bookmarks: bookmarksReducer }),
+    provideEffects([BookmarksEffects]),
+    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
+    provideRouterStore(),
+  ],
 };

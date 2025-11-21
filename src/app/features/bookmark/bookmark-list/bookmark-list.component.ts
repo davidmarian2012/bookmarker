@@ -1,13 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Bookmark } from '../../../core/models/bookmark.model';
 import { BookmarkApiService } from '../../../core/services/bookmark-api.service';
 import { BookmarkDetailsComponent } from '../bookmark-details/bookmark-details.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { BookmarkFormComponent } from '../bookmark-form/bookmark-form.component';
 import { MatButtonModule } from '@angular/material/button';
+import { Store } from '@ngrx/store';
+import { selectAllBookmarks, selectLoading } from '../../../state/bookmarks/bookmarks.selectors';
+import { Observable } from 'rxjs';
+import { addBookmark, deleteBookmark, loadBookmarks, updateBookmark } from '../../../state/bookmarks/bookmarks.actions';
 
 @Component({
   selector: 'app-bookmark-list',
@@ -17,36 +20,34 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [CommonModule, BookmarkDetailsComponent, MatIconModule, MatButtonModule],
 })
 export class BookmarkListComponent implements OnInit {
-  bookmarks: Bookmark[] = [];
+  bookmarks$!: Observable<Bookmark[]>;
+  loading$!: Observable<boolean>;
 
   constructor(
-    private bookmarkApiService: BookmarkApiService,
-    private dialog: MatDialog,
-    private router: Router,
+    private store: Store,
+    private dialogService: MatDialog,
   ) {}
 
   ngOnInit() {
-    this.bookmarkApiService.loadBookmarks().subscribe((data) => {
-      this.bookmarks = data;
-    });
+    this.bookmarks$ = this.store.select(selectAllBookmarks);
+    this.loading$ = this.store.select(selectLoading);
+
+    this.store.dispatch(loadBookmarks());
   }
 
   addBookmark() {
-    const dialogRef = this.dialog.open(BookmarkFormComponent, {
-      width: '400px',
-    });
+    const dialogRef = this.dialogService.open(BookmarkFormComponent);
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        const newBookmark = {
-          id: Date.now(),
-          name: result.name,
-          url: result.url,
-          createdAt: 1,
-        };
-
-        this.bookmarks.push(newBookmark);
-      }
+    dialogRef.afterClosed().subscribe((bookmark) => {
+      this.store.dispatch(addBookmark({ bookmark }));
     });
+  }
+
+  onBookmarkUpdated(updated: Bookmark) {
+    this.store.dispatch(updateBookmark({ bookmark: updated }));
+  }
+
+  onBookmarkDeleted(id: string) {
+    this.store.dispatch(deleteBookmark({ id }));
   }
 }

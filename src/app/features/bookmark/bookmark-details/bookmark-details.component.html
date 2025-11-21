@@ -4,6 +4,10 @@
     <button mat-icon-button color="primary" (click)="openEditDialog()">
       <mat-icon>edit</mat-icon>
     </button>
+
+    <button mat-icon-button color="warn" (click)="confirmDelete()">
+      <mat-icon>delete</mat-icon>
+    </button>
   </h2>
   <p>{{ bookmark?.url }}</p>
 </div>

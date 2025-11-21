@@ -6,7 +6,19 @@ import { Bookmark } from '../models/bookmark.model';
 export class BookmarkApiService {
   constructor(private http: HttpClient) {}
 
-  loadBookmarks() {
-    return this.http.get<Bookmark[]>('bookmarks.json');
+  getAll() {
+    return this.http.get<Bookmark[]>('http://localhost:3000/bookmarks');
+  }
+
+  add(bookmark: Bookmark) {
+    return this.http.post<Bookmark>('http://localhost:3000/bookmarks', bookmark);
+  }
+
+  edit(bookmark: Bookmark) {
+    return this.http.put<Bookmark>(`http://localhost:3000/bookmarks/${bookmark.id}`, bookmark);
+  }
+
+  delete(id: string) {
+    return this.http.delete(`http://localhost:3000/bookmarks/${id}`);
   }
 }

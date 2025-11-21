@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
 import { BookmarkFormComponent } from '../bookmark-form/bookmark-form.component';
 import { Bookmark } from '../../../core/models/bookmark.model';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-bookmark-details',
@@ -16,25 +16,34 @@ import { Bookmark } from '../../../core/models/bookmark.model';
 })
 export class BookmarkDetailsComponent implements OnInit {
   @Input() bookmark: Bookmark | null = null;
+  @Output() updated = new EventEmitter<Bookmark>();
+  @Output() deleted = new EventEmitter<string>();
 
-  constructor(
-    private dialog: MatDialog,
-    private router: Router,
-  ) {}
+  constructor(private dialogService: MatDialog) {}
 
   ngOnInit() {}
 
   openEditDialog() {
-    const dialogRef = this.dialog.open(BookmarkFormComponent, {
-      width: '400px',
-    });
-
+    const dialogRef = this.dialogService.open(BookmarkFormComponent);
     dialogRef.componentInstance.bookmark = this.bookmark;
 
     dialogRef.afterClosed().subscribe((result) => {
+      this.updated.emit(result);
+    });
+  }
+
+  confirmDelete() {
+    const dialogRef = this.dialogService.open(ConfirmDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Delete Bookmark',
+        message: `Are you sure you want to delete "${this.bookmark?.name}"?`,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log('Updated values:', result);
-        this.router.navigate(['/bookmark-list']);
+        this.deleted.emit(this.bookmark?.id);
       }
     });
   }

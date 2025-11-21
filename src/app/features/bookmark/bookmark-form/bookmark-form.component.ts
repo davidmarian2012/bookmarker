@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Bookmark } from '../../../core/models/bookmark.model';
+import { BookmarkApiService } from '../../../core/services/bookmark-api.service';
 
 @Component({
   selector: 'app-bookmark-form',
@@ -22,6 +23,7 @@ export class BookmarkFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<BookmarkFormComponent>,
+    private bookmarkApiService: BookmarkApiService,
   ) {}
 
   ngOnInit(): void {
@@ -30,15 +32,25 @@ export class BookmarkFormComponent implements OnInit {
 
   private initForm() {
     this.form = this.fb.group({
-      id: [this.bookmark?.id ?? null],
       name: [this.bookmark?.name ?? '', Validators.required],
-      url: [this.bookmark?.url ?? '', [Validators.required, Validators.pattern(/^https?:\/\/.+/)]],
+      url: [this.bookmark?.url ?? '', [Validators.required]],
     });
   }
 
-  save() {
-    if (this.form.valid) {
-      this.dialogRef.close(this.form.value);
+  onSubmit() {
+    if (this.form.invalid) return;
+
+    if (this.bookmark) {
+      this.dialogRef.close({
+        id: this.bookmark.id,
+        name: this.form.value.name,
+        url: this.form.value.url,
+      });
+    } else {
+      this.dialogRef.close({
+        name: this.form.value.name,
+        url: this.form.value.url,
+      });
     }
   }
 

@@ -1,5 +1,15 @@
-@for (bookmark of bookmarks; track bookmark) {
-  <app-bookmark-details [bookmark]="bookmark"></app-bookmark-details>
-}
+<div class="bookmark-list">
+  @if (loading$ | async) {
+    <div class="loading">Loading bookmarks…</div>
+  }
 
-<button mat-button (click)="addBookmark()">Add<mat-icon>add</mat-icon></button>
+  @for (bookmark of bookmarks$ | async; track bookmark.id) {
+    <app-bookmark-details
+      [bookmark]="bookmark"
+      (updated)="onBookmarkUpdated($event)"
+      (deleted)="onBookmarkDeleted($event)"
+    ></app-bookmark-details>
+  }
+
+  <button mat-button (click)="addBookmark()">Add <mat-icon>add</mat-icon></button>
+</div>

@@ -1,5 +1,5 @@
 export interface Bookmark {
-  id: number;
+  id: string;
   name: string;
   url: string;
   createdAt: number;
