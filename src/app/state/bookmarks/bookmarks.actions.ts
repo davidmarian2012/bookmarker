@@ -4,6 +4,8 @@ import { Bookmark } from '../../core/models/bookmark.model';
 export const loadBookmarks = createAction('[Bookmarks] Load');
 export const loadBookmarksSuccess = createAction('[Bookmarks] Load Success', props<{ bookmarks: Bookmark[] }>());
 
+export const setSearchQuery = createAction('[Bookmarks] Set Search Query', props<{ query: string }>());
+
 export const addBookmark = createAction('[Bookmarks] Add', props<{ bookmark: Bookmark }>());
 export const addBookmarkSuccess = createAction('[Bookmarks] Add Success', props<{ bookmark: Bookmark }>());
 

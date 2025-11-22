@@ -5,11 +5,13 @@ import { Bookmark } from '../../core/models/bookmark.model';
 export interface BookmarksState {
   bookmarks: Bookmark[];
   loading: boolean;
+  searchQuery: string;
 }
 
 export const initialState: BookmarksState = {
   bookmarks: [],
   loading: false,
+  searchQuery: '',
 };
 
 export const bookmarksReducer = createReducer(
@@ -34,5 +36,9 @@ export const bookmarksReducer = createReducer(
   on(BookmarkActions.deleteBookmarkSuccess, (state, { id }) => ({
     ...state,
     bookmarks: state.bookmarks.filter((b) => b.id !== id),
+  })),
+  on(BookmarkActions.setSearchQuery, (state, { query }) => ({
+    ...state,
+    searchQuery: query,
   })),
 );

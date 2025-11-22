@@ -3,12 +3,58 @@
     <div class="loading">Loading bookmarks…</div>
   }
 
-  @for (bookmark of bookmarks$ | async; track bookmark.id) {
-    <app-bookmark-details
-      [bookmark]="bookmark"
-      (updated)="onBookmarkUpdated($event)"
-      (deleted)="onBookmarkDeleted($event)"
-    ></app-bookmark-details>
+  @let groups = groupedBookmarks$ | async;
+
+  <div class="search-bar">
+    <mat-form-field appearance="outline">
+      <mat-label>Search bookmarks</mat-label>
+      <input matInput (input)="onSearch($any($event.target).value)" placeholder="Search by name or URL..." />
+      <button
+        *ngIf="searchQuery$ | async as q"
+        matSuffix
+        mat-icon-button
+        (click)="onSearch('')"
+        [style.visibility]="q ? 'visible' : 'hidden'"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+  @if (groups?.today?.length) {
+    @let today = groups.today;
+    <h3>Today</h3>
+    @for (bookmark of today; track bookmark.id) {
+      <app-bookmark-details
+        [bookmark]="bookmark"
+        (updated)="onBookmarkUpdated($event)"
+        (deleted)="onBookmarkDeleted($event)"
+      ></app-bookmark-details>
+    }
+  }
+
+  @if (groups?.yesterday?.length) {
+    @let yesterday = groups.yesterday;
+    <h3>Yesterday</h3>
+    @for (bookmark of yesterday; track bookmark.id) {
+      <app-bookmark-details
+        [bookmark]="bookmark"
+        (updated)="onBookmarkUpdated($event)"
+        (deleted)="onBookmarkDeleted($event)"
+      ></app-bookmark-details>
+    }
+  }
+
+  @if (groups?.older?.length) {
+    @let older = groups.older;
+    <h3>Older</h3>
+    @for (bookmark of older; track bookmark.id) {
+      <app-bookmark-details
+        [bookmark]="bookmark"
+        (updated)="onBookmarkUpdated($event)"
+        (deleted)="onBookmarkDeleted($event)"
+      ></app-bookmark-details>
+    }
   }
 
   <button mat-button (click)="addBookmark()">Add <mat-icon>add</mat-icon></button>

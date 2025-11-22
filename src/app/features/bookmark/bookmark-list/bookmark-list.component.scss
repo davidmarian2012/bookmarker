@@ -1,0 +1,30 @@
+.bookmark-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem 0;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+h3 {
+  margin: 1rem 0 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #6b7280;
+  letter-spacing: 0.5px;
+}
+
+.loading {
+  text-align: center;
+  color: #6b7280;
+  padding: 2rem;
+}
+
+.search-bar {
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto 1rem;
+}

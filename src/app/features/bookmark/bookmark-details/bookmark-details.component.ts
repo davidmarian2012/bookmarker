@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { BookmarkFormComponent } from '../bookmark-form/bookmark-form.component';
 import { Bookmark } from '../../../core/models/bookmark.model';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-bookmark-details',
@@ -19,22 +20,34 @@ export class BookmarkDetailsComponent implements OnInit {
   @Output() updated = new EventEmitter<Bookmark>();
   @Output() deleted = new EventEmitter<string>();
 
-  constructor(private dialogService: MatDialog) {}
+  constructor(
+    private router: Router,
+    private dialogService: MatDialog,
+  ) {}
 
   ngOnInit() {}
 
-  openEditDialog() {
-    const dialogRef = this.dialogService.open(BookmarkFormComponent);
-    dialogRef.componentInstance.bookmark = this.bookmark;
+  openUrl() {
+    if (!this.bookmark?.url) return;
 
-    dialogRef.afterClosed().subscribe((result) => {
-      this.updated.emit(result);
-    });
+    let url = this.bookmark.url.trim();
+
+    if (!/^https?:\/\//i.test(url)) {
+      url = 'https://' + url;
+    }
+
+    window.open(url, '_blank');
+  }
+
+  openEdit() {
+    this.router.navigate(['/bookmarks/edit', this.bookmark?.id]);
   }
 
   confirmDelete() {
     const dialogRef = this.dialogService.open(ConfirmDialogComponent, {
       width: '350px',
+      autoFocus: false,
+      restoreFocus: false,
       data: {
         title: 'Delete Bookmark',
         message: `Are you sure you want to delete "${this.bookmark?.name}"?`,

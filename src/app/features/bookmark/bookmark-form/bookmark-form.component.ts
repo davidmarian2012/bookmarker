@@ -6,7 +6,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Bookmark } from '../../../core/models/bookmark.model';
-import { BookmarkApiService } from '../../../core/services/bookmark-api.service';
+import { addBookmark, updateBookmark } from '../../../state/bookmarks/bookmarks.actions';
+import { selectAllBookmarks } from '../../../state/bookmarks/bookmarks.selectors';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-bookmark-form',
@@ -16,45 +20,75 @@ import { BookmarkApiService } from '../../../core/services/bookmark-api.service'
   styleUrls: ['./bookmark-form.component.scss'],
 })
 export class BookmarkFormComponent implements OnInit {
-  @Input() bookmark: Bookmark | null = null;
-
   form!: FormGroup;
+  bookmark: Bookmark | null = null;
+  isEdit = false;
 
   constructor(
     private fb: FormBuilder,
-    private dialogRef: MatDialogRef<BookmarkFormComponent>,
-    private bookmarkApiService: BookmarkApiService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private store: Store,
   ) {}
 
   ngOnInit(): void {
     this.initForm();
+
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.isEdit = true;
+
+      this.store
+        .select(selectAllBookmarks)
+        .pipe(map((bks) => bks.find((b) => b.id === id) ?? null))
+        .subscribe((bm) => {
+          this.bookmark = bm;
+
+          if (bm) {
+            this.form.patchValue({
+              name: bm.name,
+              url: bm.url,
+            });
+          }
+        });
+    }
   }
 
   private initForm() {
     this.form = this.fb.group({
-      name: [this.bookmark?.name ?? '', Validators.required],
-      url: [this.bookmark?.url ?? '', [Validators.required]],
+      name: ['', Validators.required],
+      url: ['', [Validators.required, Validators.pattern(/^(https?:\/\/)([\w.-]+)\.([a-z]{2,})(\/.*)?$/i)]],
     });
   }
 
   onSubmit() {
     if (this.form.invalid) return;
 
-    if (this.bookmark) {
-      this.dialogRef.close({
-        id: this.bookmark.id,
+    let payload: Bookmark;
+
+    if (this.isEdit && this.bookmark) {
+      payload = {
+        ...this.bookmark,
         name: this.form.value.name,
         url: this.form.value.url,
-      });
+      };
+
+      this.store.dispatch(updateBookmark({ bookmark: payload }));
     } else {
-      this.dialogRef.close({
+      payload = {
+        id: crypto.randomUUID(),
         name: this.form.value.name,
         url: this.form.value.url,
-      });
+        createdAt: Date.now(),
+      };
+
+      this.store.dispatch(addBookmark({ bookmark: payload }));
     }
+
+    this.router.navigateByUrl('/');
   }
 
   cancel() {
-    this.dialogRef.close();
+    this.router.navigateByUrl('/');
   }
 }

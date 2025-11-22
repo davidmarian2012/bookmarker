@@ -1,18 +1,22 @@
-<h2>{{ bookmark ? 'Edit Bookmark' : 'Create Bookmark' }}</h2>
+<div class="form-card">
+  <h2>{{ isEdit ? 'Edit Bookmark' : 'Add Bookmark' }}</h2>
 
-<form [formGroup]="form">
-  <mat-form-field appearance="fill" class="full">
-    <mat-label>Name</mat-label>
-    <input matInput formControlName="name" />
-  </mat-form-field>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
 
-  <mat-form-field appearance="fill" class="full">
-    <mat-label>URL</mat-label>
-    <input matInput formControlName="url" />
-  </mat-form-field>
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>URL</mat-label>
+      <input matInput formControlName="url" />
+    </mat-form-field>
 
-  <div class="actions">
-    <button mat-button (click)="cancel()">Cancel</button>
-    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="form.invalid">Save</button>
-  </div>
-</form>
+    <div class="actions">
+      <button mat-button type="button" (click)="cancel()">Cancel</button>
+      <button mat-raised-button color="primary" type="submit" (click)="onSubmit()" [disabled]="form.invalid">
+        {{ isEdit ? 'Save Changes' : 'Add Bookmark' }}
+      </button>
+    </div>
+  </form>
+</div>

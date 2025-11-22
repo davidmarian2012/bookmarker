@@ -43,7 +43,7 @@ export class BookmarksEffects {
         ofType(BookmarkActions.updateBookmark),
         mergeMap(({ bookmark }) =>
           this.bookmarkApiService
-            .edit(bookmark)
+            .update(bookmark)
             .pipe(map((updated) => BookmarkActions.updateBookmarkSuccess({ bookmark: updated }))),
         ),
       ),
