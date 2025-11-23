@@ -4,23 +4,23 @@ import { Bookmark } from '../models/bookmark.model';
 
 @Injectable({ providedIn: 'root' })
 export class BookmarkApiService {
-  private readonly baseUrl = 'http://localhost:3000/bookmarks';
+  private readonly url = 'http://localhost:3000/bookmarks';
 
   constructor(private http: HttpClient) {}
 
   getAll() {
-    return this.http.get<Bookmark[]>(this.baseUrl);
+    return this.http.get<Bookmark[]>(this.url);
   }
 
   add(bookmark: Bookmark) {
-    return this.http.post<Bookmark>(this.baseUrl, bookmark);
+    return this.http.post<Bookmark>(this.url, bookmark);
   }
 
   update(bookmark: Bookmark) {
-    return this.http.put<Bookmark>(`${this.baseUrl}/${bookmark.id}`, bookmark);
+    return this.http.put<Bookmark>(`${this.url}/${bookmark.id}`, bookmark);
   }
 
   delete(id: string) {
-    return this.http.delete(`${this.baseUrl}/${id}`);
+    return this.http.delete(`${this.url}/${id}`);
   }
 }

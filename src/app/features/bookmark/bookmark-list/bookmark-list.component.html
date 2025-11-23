@@ -1,61 +1,34 @@
-<div class="bookmark-list">
+@let data = displayData$ | async;
+
+<div class="container">
   @if (loading$ | async) {
     <div class="loading">Loading bookmarks…</div>
-  }
+  } @else {
+    <div>
+      <mat-form-field appearance="outline">
+        <mat-label>Search bookmarks</mat-label>
+        <input matInput (input)="onSearch($any($event.target).value)" />
+      </mat-form-field>
+    </div>
 
-  @let groups = groupedBookmarks$ | async;
+    @for (section of data?.sections; track section.label) {
+      @if (section.items?.length > 0) {
+        <h3>{{ section.label }}</h3>
 
-  <div class="search-bar">
-    <mat-form-field appearance="outline">
-      <mat-label>Search bookmarks</mat-label>
-      <input matInput (input)="onSearch($any($event.target).value)" placeholder="Search by name or URL..." />
-      <button
-        *ngIf="searchQuery$ | async as q"
-        matSuffix
-        mat-icon-button
-        (click)="onSearch('')"
-        [style.visibility]="q ? 'visible' : 'hidden'"
-      >
-        <mat-icon>close</mat-icon>
-      </button>
-    </mat-form-field>
-  </div>
-
-  @if (groups?.today?.length) {
-    @let today = groups.today;
-    <h3>Today</h3>
-    @for (bookmark of today; track bookmark.id) {
-      <app-bookmark-details
-        [bookmark]="bookmark"
-        (updated)="onBookmarkUpdated($event)"
-        (deleted)="onBookmarkDeleted($event)"
-      ></app-bookmark-details>
+        @for (bookmark of section.items; track bookmark.id) {
+          <app-bookmark-details
+            [bookmark]="bookmark"
+            (updated)="onBookmarkUpdated($event)"
+            (deleted)="onBookmarkDeleted($event)"
+          ></app-bookmark-details>
+        }
+      }
     }
-  }
 
-  @if (groups?.yesterday?.length) {
-    @let yesterday = groups.yesterday;
-    <h3>Yesterday</h3>
-    @for (bookmark of yesterday; track bookmark.id) {
-      <app-bookmark-details
-        [bookmark]="bookmark"
-        (updated)="onBookmarkUpdated($event)"
-        (deleted)="onBookmarkDeleted($event)"
-      ></app-bookmark-details>
+    @if (data?.empty) {
+      <p>No results found.</p>
     }
-  }
 
-  @if (groups?.older?.length) {
-    @let older = groups.older;
-    <h3>Older</h3>
-    @for (bookmark of older; track bookmark.id) {
-      <app-bookmark-details
-        [bookmark]="bookmark"
-        (updated)="onBookmarkUpdated($event)"
-        (deleted)="onBookmarkDeleted($event)"
-      ></app-bookmark-details>
-    }
+    <button mat-button (click)="addBookmark()" class="add-btn">Add <mat-icon>add</mat-icon></button>
   }
-
-  <button mat-button (click)="addBookmark()">Add <mat-icon>add</mat-icon></button>
 </div>

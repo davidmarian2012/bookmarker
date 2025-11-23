@@ -1,21 +1,21 @@
 <div class="container">
-  <div class="header">
-    <div class="left">
+  <div class="bookmark-data">
+    <div class="bookmark-title">
       <mat-icon class="bookmark-icon">bookmark</mat-icon>
       <h2 class="title">{{ bookmark?.name }}</h2>
     </div>
 
-    <div class="actions">
-      <button mat-icon-button color="primary" (click)="openEdit()">
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button mat-icon-button color="warn" (click)="confirmDelete()">
-        <mat-icon>delete</mat-icon>
-      </button>
+    <div (click)="openUrl()">
+      <p class="url">{{ bookmark?.url }}</p>
     </div>
   </div>
 
-  <div class="url-row" (click)="openUrl()">
-    <p class="url">{{ bookmark?.url }}</p>
+  <div class="bookmark-actions">
+    <button mat-icon-button color="primary" (click)="openEdit()">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button color="warn" (click)="confirmDelete()">
+      <mat-icon>delete</mat-icon>
+    </button>
   </div>
 </div>

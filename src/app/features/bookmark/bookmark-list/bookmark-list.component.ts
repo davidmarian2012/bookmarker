@@ -1,20 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Bookmark } from '../../../core/models/bookmark.model';
-import { BookmarkApiService } from '../../../core/services/bookmark-api.service';
 import { BookmarkDetailsComponent } from '../bookmark-details/bookmark-details.component';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialog } from '@angular/material/dialog';
-import { BookmarkFormComponent } from '../bookmark-form/bookmark-form.component';
 import { MatButtonModule } from '@angular/material/button';
 import { Store } from '@ngrx/store';
 import {
-  selectAllBookmarks,
+  selectFilteredBookmarks,
   selectGroupedBookmarks,
   selectLoading,
   selectSearchQuery,
 } from '../../../state/bookmarks/bookmarks.selectors';
-import { Observable } from 'rxjs';
+import { combineLatest, debounceTime, distinctUntilChanged, map, Observable, Subject } from 'rxjs';
 import {
   addBookmark,
   deleteBookmark,
@@ -47,6 +44,9 @@ export class BookmarkListComponent implements OnInit {
   loading$!: Observable<boolean>;
   groupedBookmarks$!: Observable<any>;
   searchQuery$!: Observable<any>;
+  displayData$!: Observable<any>;
+
+  searchInput$ = new Subject<string>();
 
   constructor(
     private store: Store,
@@ -54,16 +54,44 @@ export class BookmarkListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.bookmarks$ = this.store.select(selectAllBookmarks);
+    this.bookmarks$ = this.store.select(selectFilteredBookmarks);
     this.loading$ = this.store.select(selectLoading);
     this.groupedBookmarks$ = this.store.select(selectGroupedBookmarks);
     this.searchQuery$ = this.store.select(selectSearchQuery);
 
     this.store.dispatch(loadBookmarks());
+
+    this.searchInput$
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((query) => this.store.dispatch(setSearchQuery({ query })));
+
+    this.setDisplayData();
+  }
+
+  private setDisplayData() {
+    this.displayData$ = combineLatest([this.searchQuery$, this.bookmarks$, this.groupedBookmarks$]).pipe(
+      map(([query, bookmarks, groups]) => {
+        const isSearch = !!query?.length;
+
+        const sections = isSearch
+          ? [{ label: 'Search results', items: bookmarks }]
+          : [
+              { label: 'Today', items: groups?.today ?? [] },
+              { label: 'Yesterday', items: groups?.yesterday ?? [] },
+              { label: 'Older', items: groups?.older ?? [] },
+            ];
+
+        return {
+          mode: isSearch ? 'search' : 'groups',
+          sections,
+          empty: isSearch && bookmarks.length === 0,
+        };
+      }),
+    );
   }
 
   onSearch(query: string) {
-    this.store.dispatch(setSearchQuery({ query }));
+    this.searchInput$.next(query);
   }
 
   addBookmark() {
