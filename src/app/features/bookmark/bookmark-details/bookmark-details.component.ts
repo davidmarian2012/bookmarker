@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule, MatIconModule, MatButtonModule],
 })
-export class BookmarkDetailsComponent implements OnInit {
+export class BookmarkDetailsComponent {
   @Input() bookmark: Bookmark | null = null;
   @Output() updated = new EventEmitter<Bookmark>();
   @Output() deleted = new EventEmitter<string>();
@@ -23,8 +23,6 @@ export class BookmarkDetailsComponent implements OnInit {
     private router: Router,
     private dialogService: MatDialog,
   ) {}
-
-  ngOnInit() {}
 
   openUrl() {
     if (!this.bookmark?.url) return;
@@ -38,18 +36,18 @@ export class BookmarkDetailsComponent implements OnInit {
     window.open(url, '_blank');
   }
 
-  openEdit() {
+  onEdit() {
     this.router.navigate(['/bookmarks/edit', this.bookmark?.id]);
   }
 
-  confirmDelete() {
+  onDelete() {
     const dialogRef = this.dialogService.open(ConfirmDialogComponent, {
-      width: '350px',
+      width: '500px',
       autoFocus: false,
       restoreFocus: false,
       data: {
         title: 'Delete Bookmark',
-        message: `Are you sure you want to delete "${this.bookmark?.name}"?`,
+        message: `Are you sure you want to delete ${this.bookmark?.name}?`,
       },
     });
 

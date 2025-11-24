@@ -1,0 +1,22 @@
+{
+  "bookmarks": [
+    {
+      "id": "c817caad-8387-40e8-806e-8149417cc887",
+      "name": "Google",
+      "url": "https://google.com",
+      "createdAt": 1763818030344
+    },
+    {
+      "id": "ba83e750-02ab-4219-a3c4-096a0dd5d0bf",
+      "name": "Angular",
+      "url": "https://angular.dev",
+      "createdAt": 1763892933617
+    },
+    {
+      "id": "b55e455a-32dc-443b-8ed0-ba39a1988520",
+      "name": "Reddit",
+      "url": "https://reddit.com",
+      "createdAt": 1763892938146
+    }
+  ]
+}

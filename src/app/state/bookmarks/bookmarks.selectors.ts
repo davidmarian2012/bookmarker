@@ -12,9 +12,7 @@ export interface GroupedBookmarks {
 export const selectBookmarksState = createFeatureSelector<BookmarksState>('bookmarks');
 
 export const selectAllBookmarks = createSelector(selectBookmarksState, (state) => state.bookmarks);
-
 export const selectLoading = createSelector(selectBookmarksState, (state) => state.loading);
-
 export const selectSearchQuery = createSelector(selectBookmarksState, (state) => state.searchQuery);
 
 export const selectFilteredBookmarks = createSelector(selectAllBookmarks, selectSearchQuery, (bookmarks, query) => {

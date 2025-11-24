@@ -9,7 +9,7 @@ import { addBookmark, updateBookmark } from '../../../state/bookmarks/bookmarks.
 import { selectAllBookmarks } from '../../../state/bookmarks/bookmarks.selectors';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { map } from 'rxjs';
+import { map, take } from 'rxjs';
 
 @Component({
   selector: 'app-bookmark-form',
@@ -32,25 +32,7 @@ export class BookmarkFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.isEdit = true;
-
-      this.store
-        .select(selectAllBookmarks)
-        .pipe(map((bks) => bks.find((b) => b.id === id) ?? null))
-        .subscribe((bm) => {
-          this.bookmark = bm;
-
-          if (bm) {
-            this.form.patchValue({
-              name: bm.name,
-              url: bm.url,
-            });
-          }
-        });
-    }
+    this.patchForm();
   }
 
   private initForm() {
@@ -58,6 +40,35 @@ export class BookmarkFormComponent implements OnInit {
       name: ['', Validators.required],
       url: ['', [Validators.required, Validators.pattern(/^(https?:\/\/)([\w.-]+)\.([a-z]{2,})(\/.*)?$/i)]],
     });
+  }
+
+  private patchForm() {
+    const id = this.route.snapshot.paramMap.get('id');
+
+    if (id) {
+      this.isEdit = true;
+
+      this.store
+        .select(selectAllBookmarks)
+        .pipe(
+          map((bookmarks) => bookmarks.find((bookmark) => bookmark.id === id) ?? null),
+          take(1),
+        )
+        .subscribe((b) => {
+          this.bookmark = b;
+
+          if (b) {
+            this.form.patchValue({
+              name: b.name,
+              url: b.url,
+            });
+          }
+        });
+    }
+  }
+
+  onCancel() {
+    this.router.navigateByUrl('/');
   }
 
   onSubmit() {
@@ -84,10 +95,6 @@ export class BookmarkFormComponent implements OnInit {
       this.store.dispatch(addBookmark({ bookmark: payload }));
     }
 
-    this.router.navigateByUrl('/');
-  }
-
-  cancel() {
     this.router.navigateByUrl('/');
   }
 }

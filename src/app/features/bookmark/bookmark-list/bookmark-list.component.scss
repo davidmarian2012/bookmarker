@@ -19,6 +19,12 @@ h3 {
   letter-spacing: 0.5px;
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+}
+
 .loading {
   text-align: center;
   color: #6b7280;
@@ -26,8 +32,7 @@ h3 {
 }
 
 .add-btn {
-  margin-top: 40px;
-  width: 200px;
+  width: 240px;
   color: rgb(237, 237, 237) !important;
   height: 50px;
   background-color: rgb(100, 148, 148);

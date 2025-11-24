@@ -4,11 +4,15 @@
   @if (loading$ | async) {
     <div class="loading">Loading bookmarks…</div>
   } @else {
-    <div>
-      <mat-form-field appearance="outline">
-        <mat-label>Search bookmarks</mat-label>
-        <input matInput (input)="onSearch($any($event.target).value)" />
-      </mat-form-field>
+    <div class="header">
+      <div>
+        <mat-form-field appearance="outline">
+          <mat-label>Search bookmarks</mat-label>
+          <input matInput (input)="onSearch($any($event.target).value)" />
+        </mat-form-field>
+      </div>
+
+      <button mat-button (click)="addBookmark()" class="add-btn">Add bookmark<mat-icon>add</mat-icon></button>
     </div>
 
     @for (section of data?.sections; track section.label) {
@@ -28,7 +32,5 @@
     @if (data?.empty) {
       <p>No results found.</p>
     }
-
-    <button mat-button (click)="addBookmark()" class="add-btn">Add <mat-icon>add</mat-icon></button>
   }
 </div>

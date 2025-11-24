@@ -12,3 +12,7 @@ body {
 h2 {
   font-weight: 500 !important;
 }
+
+.mdc-text-field--outlined {
+  --mdc-outlined-text-field-container-shape: 28px !important;
+}
