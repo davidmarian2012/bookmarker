@@ -16,7 +16,7 @@ import { normalizeUrl } from '../../../shared/utils/normalize-url';
   imports: [CommonModule, MatIconModule, MatButtonModule],
 })
 export class BookmarkDetailsComponent {
-  @Input() bookmark: Bookmark | null = null;
+  @Input() bookmark!: Bookmark;
   @Output() deleted = new EventEmitter<string>();
 
   constructor(
@@ -25,14 +25,11 @@ export class BookmarkDetailsComponent {
   ) {}
 
   openUrl() {
-    if (!this.bookmark?.url) return;
-
-    const url = normalizeUrl(this.bookmark.url);
-    window.open(url, '_blank');
+    window.open(normalizeUrl(this.bookmark.url), '_blank');
   }
 
   onEdit() {
-    this.router.navigate(['/bookmarks/edit', this.bookmark?.id]);
+    this.router.navigate(['/bookmarks/edit', this.bookmark.id]);
   }
 
   onDelete() {
@@ -42,13 +39,13 @@ export class BookmarkDetailsComponent {
       restoreFocus: false,
       data: {
         title: 'Delete Bookmark',
-        message: `Are you sure you want to delete ${this.bookmark?.name}?`,
+        message: `Are you sure you want to delete ${this.bookmark.name}?`,
       },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.deleted.emit(this.bookmark?.id);
+        this.deleted.emit(this.bookmark.id);
       }
     });
   }
