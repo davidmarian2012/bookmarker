@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Bookmark } from '../../../core/models/bookmark.model';
 import { BookmarkDetailsComponent } from '../bookmark-details/bookmark-details.component';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,6 +22,7 @@ import { MatFormField } from '@angular/material/form-field';
 import { MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
+import { SubscribedComponent } from '../../../shared/components/subscribed/subscribed.component';
 
 @Component({
   selector: 'app-bookmark-list',
@@ -38,7 +39,7 @@ import { Router } from '@angular/router';
     MatInputModule,
   ],
 })
-export class BookmarkListComponent implements OnInit, OnDestroy {
+export class BookmarkListComponent extends SubscribedComponent implements OnInit {
   bookmarks$!: Observable<Bookmark[]>;
   loading$!: Observable<boolean>;
   groupedBookmarks$!: Observable<any>;
@@ -46,12 +47,13 @@ export class BookmarkListComponent implements OnInit, OnDestroy {
   displayData$!: Observable<any>;
 
   searchInput$ = new Subject<string>();
-  destroy$ = new Subject<void>();
 
   constructor(
     private store: Store,
     private router: Router,
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.bookmarks$ = this.store.select(selectFilteredBookmarks);
@@ -62,7 +64,7 @@ export class BookmarkListComponent implements OnInit, OnDestroy {
     this.store.dispatch(loadBookmarks());
 
     this.searchInput$
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroyed$))
       .subscribe((query) => this.store.dispatch(setSearchQuery({ query })));
 
     this.setDisplayData();
@@ -100,10 +102,5 @@ export class BookmarkListComponent implements OnInit, OnDestroy {
 
   onBookmarkDeleted(id: string) {
     this.store.dispatch(deleteBookmark({ id }));
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }
