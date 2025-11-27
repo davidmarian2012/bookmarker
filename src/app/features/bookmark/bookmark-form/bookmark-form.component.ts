@@ -10,6 +10,7 @@ import { selectAllBookmarks } from '../../../state/bookmarks/bookmarks.selectors
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map, take } from 'rxjs';
+import { normalizeUrl } from '../../../shared/utils/normalize-url';
 
 @Component({
   selector: 'app-bookmark-form',
@@ -38,7 +39,7 @@ export class BookmarkFormComponent implements OnInit {
   private initForm() {
     this.form = this.fb.group({
       name: ['', Validators.required],
-      url: ['', [Validators.required, Validators.pattern(/^(https?:\/\/)([\w.-]+)\.([a-z]{2,})(\/.*)?$/i)]],
+      url: ['', Validators.required],
     });
   }
 
@@ -75,12 +76,13 @@ export class BookmarkFormComponent implements OnInit {
     if (this.form.invalid) return;
 
     let payload: Bookmark;
+    const normalizedUrl = normalizeUrl(this.form.value.url);
 
     if (this.isEdit && this.bookmark) {
       payload = {
         ...this.bookmark,
         name: this.form.value.name,
-        url: this.form.value.url,
+        url: normalizedUrl,
       };
 
       this.store.dispatch(updateBookmark({ bookmark: payload }));
@@ -88,7 +90,7 @@ export class BookmarkFormComponent implements OnInit {
       payload = {
         id: crypto.randomUUID(),
         name: this.form.value.name,
-        url: this.form.value.url,
+        url: normalizedUrl,
         createdAt: Date.now(),
       };
 

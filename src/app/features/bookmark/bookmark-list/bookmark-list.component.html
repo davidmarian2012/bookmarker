@@ -5,12 +5,10 @@
     <div class="loading">Loading bookmarks…</div>
   } @else {
     <div class="header">
-      <div>
-        <mat-form-field appearance="outline">
-          <mat-label>Search bookmarks</mat-label>
-          <input matInput (input)="onSearch($any($event.target).value)" />
-        </mat-form-field>
-      </div>
+      <mat-form-field appearance="outline">
+        <mat-label>Search bookmarks</mat-label>
+        <input matInput (input)="onSearch($any($event.target).value)" />
+      </mat-form-field>
 
       <button mat-button (click)="addBookmark()" class="add-btn">Add bookmark<mat-icon>add</mat-icon></button>
     </div>
@@ -20,11 +18,7 @@
         <h3>{{ section.label }}</h3>
 
         @for (bookmark of section.items; track bookmark.id) {
-          <app-bookmark-details
-            [bookmark]="bookmark"
-            (updated)="onBookmarkUpdated($event)"
-            (deleted)="onBookmarkDeleted($event)"
-          ></app-bookmark-details>
+          <app-bookmark-details [bookmark]="bookmark" (deleted)="onBookmarkDeleted($event)"></app-bookmark-details>
         }
       }
     }

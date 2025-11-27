@@ -98,12 +98,6 @@ export class BookmarkListComponent implements OnInit, OnDestroy {
     this.router.navigate(['/bookmarks/add']);
   }
 
-  onBookmarkUpdated(updated: Bookmark) {
-    if (updated) {
-      this.store.dispatch(updateBookmark({ bookmark: updated }));
-    }
-  }
-
   onBookmarkDeleted(id: string) {
     this.store.dispatch(deleteBookmark({ id }));
   }

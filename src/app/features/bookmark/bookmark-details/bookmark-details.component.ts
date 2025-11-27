@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Bookmark } from '../../../core/models/bookmark.model';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { Router } from '@angular/router';
+import { normalizeUrl } from '../../../shared/utils/normalize-url';
 
 @Component({
   selector: 'app-bookmark-details',
@@ -16,7 +17,6 @@ import { Router } from '@angular/router';
 })
 export class BookmarkDetailsComponent {
   @Input() bookmark: Bookmark | null = null;
-  @Output() updated = new EventEmitter<Bookmark>();
   @Output() deleted = new EventEmitter<string>();
 
   constructor(
@@ -27,12 +27,7 @@ export class BookmarkDetailsComponent {
   openUrl() {
     if (!this.bookmark?.url) return;
 
-    let url = this.bookmark.url.trim();
-
-    if (!/^https?:\/\//i.test(url)) {
-      url = 'https://' + url;
-    }
-
+    const url = normalizeUrl(this.bookmark.url);
     window.open(url, '_blank');
   }
 
