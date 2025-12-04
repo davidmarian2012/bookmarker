@@ -6,7 +6,6 @@ export function groupBookmarks(bookmarks: Bookmark[]) {
     yesterday: [] as Bookmark[],
     older: [] as Bookmark[],
   };
-
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const yesterday = new Date(today);
