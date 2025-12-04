@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as BookmarkActions from './bookmarks.actions';
-import { map, mergeMap, switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { BookmarkApiService } from '../../core/services/bookmark-api.service';
 
 @Injectable()
@@ -28,7 +28,7 @@ export class BookmarksEffects {
     () =>
       this.actions$.pipe(
         ofType(BookmarkActions.addBookmark),
-        mergeMap(({ bookmark }) =>
+        switchMap(({ bookmark }) =>
           this.bookmarkApiService
             .add(bookmark)
             .pipe(map((created) => BookmarkActions.addBookmarkSuccess({ bookmark: created }))),
@@ -41,7 +41,7 @@ export class BookmarksEffects {
     () =>
       this.actions$.pipe(
         ofType(BookmarkActions.updateBookmark),
-        mergeMap(({ bookmark }) =>
+        switchMap(({ bookmark }) =>
           this.bookmarkApiService
             .update(bookmark)
             .pipe(map((updated) => BookmarkActions.updateBookmarkSuccess({ bookmark: updated }))),
@@ -54,7 +54,7 @@ export class BookmarksEffects {
     () =>
       this.actions$.pipe(
         ofType(BookmarkActions.deleteBookmark),
-        mergeMap(({ id }) =>
+        switchMap(({ id }) =>
           this.bookmarkApiService.delete(id).pipe(map(() => BookmarkActions.deleteBookmarkSuccess({ id }))),
         ),
       ),

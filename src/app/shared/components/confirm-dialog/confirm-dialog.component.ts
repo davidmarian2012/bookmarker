@@ -1,8 +1,15 @@
-import { Component, Inject, Input } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
+
+export interface ConfirmDialogData {
+  title: string;
+  message: string;
+  actionBtn?: string;
+  cancelBtn?: string;
+}
 
 @Component({
   selector: 'app-confirm-dialog',
@@ -12,15 +19,8 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./confirm-dialog.component.scss'],
 })
 export class ConfirmDialogComponent {
-  @Input() actionBtn = 'Delete';
-  @Input() cancelBtn = 'Cancel';
-
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: any,
+    @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogData,
     private dialogRef: MatDialogRef<ConfirmDialogComponent>,
   ) {}
-
-  close(result: boolean) {
-    this.dialogRef.close(result);
-  }
 }

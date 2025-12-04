@@ -17,10 +17,10 @@ export class BookmarkApiService {
   }
 
   update(bookmark: Bookmark) {
-    return this.http.put<Bookmark>(`${this.url}/${bookmark.id}`, bookmark);
+    return this.http.put<Bookmark>(this.url + '/' + bookmark.id, bookmark);
   }
 
   delete(id: string) {
-    return this.http.delete(`${this.url}/${id}`);
+    return this.http.delete(this.url + '/' + id);
   }
 }

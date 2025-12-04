@@ -40,6 +40,8 @@ export class BookmarkDetailsComponent {
       data: {
         title: 'Delete Bookmark',
         message: `Are you sure you want to delete ${this.bookmark.name}?`,
+        actionBtn: 'Delete',
+        cancelBtn: 'Cancel',
       },
     });
 
